@@ -14,21 +14,26 @@ public class Plant implements block{
 
     private EV3GyroSensor gyroSensor = new EV3GyroSensor(SensorPort.S1);
     private RegulatedMotor leftMotor = Motor.A;
-    private RegulatedMotor rightMotor = Motor.B;	
+    private RegulatedMotor rightMotor = Motor.B;
     private SensorMode gyro = gyroSensor.getMode(1);
-    
+
     public Plant(){
     	gyroSensor.reset();
+		LCD.clear();
+		LCD.drawString("reset!\nmax:"+leftMotor.getMaxSpeed(), 1, 0);
+		LCD.refresh();
     }
-    
+
 	@Override
 	public double calc(double input) {
-		//ƒWƒƒƒCƒƒZƒ“ƒT[‚Ì’l
+		//è§’åº¦æ ¼ç´ç”¨
 		float gyrovalue[] = new float[gyro.sampleSize()];
 
-		//ƒ‚[ƒ^[‚ÌƒXƒs[ƒh‚ÆŒü‚«‚ğİ’è
+		//ãƒ¢ãƒ¼ã‚¿ãƒ¼ã‚¹ãƒ”ãƒ¼ãƒ‰ã‚’ã‚»ãƒƒãƒˆ
 		leftMotor.setSpeed(Math.abs((int)input));
 		rightMotor.setSpeed(Math.abs((int)input));
+//		LCD.clear();
+//		LCD.drawString("speed"+ input + "\n", 1, 0);
 		if(input < 0.0f){
 			leftMotor.backward();
 			rightMotor.backward();
@@ -37,19 +42,19 @@ public class Plant implements block{
 			leftMotor.forward();
 			rightMotor.forward();
 		}
-		
-		//ƒWƒƒƒCƒƒZƒ“ƒT[‚Ì’l‚ğæ“¾
+
+		//è§’åº¦ã‚’å–å¾—
 		gyro.fetchSample(gyrovalue, 0);
 
-		//ƒWƒƒƒCƒƒZƒ“ƒT[‚Ì’l‚ğ[0.0-359.9]‚É³‹K‰»
+		//å€¤ã®æ­£è¦åŒ–
 		double output = (double)gyrovalue[0];
-		while(output > 360.0f) output -= 360.0f;
+//		while(output > 360.0f) output -= 360.0f;
 
-		//‰æ–Ê‚ÉƒWƒƒƒCƒƒZƒ“ƒT[‚ÌŠp“x‚ğ•\¦
+		//ç”»é¢å‡ºåŠ›
 		LCD.clear();
 		LCD.drawString("degree:"+output, 1, 0);
 		LCD.refresh();
-		
+
 		return output;
 	}
 

@@ -1,13 +1,16 @@
 import block.Controller;
 import block.Plant;
-import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 
-public class Main {
+public class Main{
 
+	static int key;
+	
 	public static void main(String[] args) {
 		Controller controller = new Controller();	// Controller
 		Plant ev3 = new Plant();	// Plant (EV3)
+		
+		Delay.msDelay(5000);
 		
 		double motorSpeed = 0.0f;	// 制御器の出力，プラントへの入力
 		double ev3Output = 0.0f;	//　プラントの出力，制御器への入力
@@ -16,5 +19,6 @@ public class Main {
 			ev3Output = ev3.calc(motorSpeed);
 		}
 	}
+
 
 }
