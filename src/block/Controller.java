@@ -48,29 +48,28 @@ public class Controller implements block{
 			File csv = new File("outputData.csv");
 			BufferedWriter bw = new BufferedWriter(new FileWriter(csv, true));
 
-			double error = SETPOINT - input;
 			double nowtime = stopwatch.elapsed();
 			String newline = "";
 
 			if((flags & 0x01) > 0x00){	//比例制御
-				degree += error * K_p;
-				newline += error * K_p + ",";
+				degree += input * K_p;
+				newline += input * K_p + ",";
 			}
 			if((flags & 0x02) > 0x00){	//積分制御
-				iHistory += error * K_i;
+				iHistory += input * K_i;
 				degree += iHistory;
 				newline += iHistory + ",";
 			}
 			if((flags & 0x04) > 0x00){	//微分制御
-				degree += K_d * (error - before) / (nowtime - before_time);
-				newline += K_d * (error - before) / (nowtime - before_time)+",";
+				degree += K_d * (input - before) / (nowtime - before_time);
+				newline += K_d * (input - before) / (nowtime - before_time)+",";
 				before_time = nowtime;
-				before = error;
+				before = input;
 			}
 			
-			motorSpeed = 2.6f * (error < 0.0f? -1.0f:1.0f) * 14.0f * Math.sqrt(2.0f * (1.0f - Math.cos(Math.abs(error - degree)))) / (11.0f * Math.PI) * 360.0f;
+			motorSpeed = 2.6f * (input < 0.0f? -1.0f:1.0f) * 14.0f * Math.sqrt(2.0f * (1.0f - Math.cos(Math.abs(input - degree)))) / (11.0f * Math.PI) * 360.0f;
 			
-			newline += motorSpeed+","+error+"\n";
+			newline += motorSpeed+","+input+"\n";
 			bw.write(newline);
 			bw.close();
 		}catch(FileNotFoundException e){

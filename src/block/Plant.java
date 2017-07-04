@@ -20,7 +20,7 @@ public class Plant implements block{
     public Plant(){
     	gyroSensor.reset();
 		LCD.clear();
-		LCD.drawString("reset!\nmax:"+leftMotor.getMaxSpeed(), 1, 0);
+		LCD.drawString("reset!", 1, 0);
 		LCD.refresh();
     }
 
