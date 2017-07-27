@@ -15,7 +15,7 @@ public class Plant implements block{
     private EV3GyroSensor gyroSensor = new EV3GyroSensor(SensorPort.S1);
     private RegulatedMotor leftMotor = Motor.A;
     private RegulatedMotor rightMotor = Motor.B;
-    private SensorMode gyro = gyroSensor.getMode(1);
+    private SensorMode gyro = gyroSensor.getMode(0);
 
     public Plant(){
     	gyroSensor.reset();
@@ -32,8 +32,12 @@ public class Plant implements block{
 		//モータースピードをセット
 		leftMotor.setSpeed(Math.abs((int)input));
 		rightMotor.setSpeed(Math.abs((int)input));
+
+		//print input
 //		LCD.clear();
-//		LCD.drawString("speed"+ input + "\n", 1, 0);
+//		LCD.drawString("speed:"+ input + "\n", 1, 0);
+//		LCD.refresh();
+
 		if(input < 0.0f){
 			leftMotor.backward();
 			rightMotor.backward();
