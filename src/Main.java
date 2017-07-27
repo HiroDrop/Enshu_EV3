@@ -16,14 +16,12 @@ public class Main{
 		double now_time;
 		final double T = 100.0f;
 
-		Delay.msDelay(5000);
-		
 		double motorSpeed = 0.0f;	// 制御器の出力，プラントへの入力
 		double ev3Output = 0.0f;	//　プラントの出力，制御器への入力
 		while(true){
 			now_time = stopwatch.elapsed();
 			if(now_time - before_time > T){
-				motorSpeed = controller.calc(SETPOINT - ev3Output);
+				motorSpeed = controller.calc((ev3.isGoodCond()? 0.7f : 1.0f) * (SETPOINT - ev3Output));
 			}
 			ev3Output = ev3.calc(motorSpeed);
 		}
