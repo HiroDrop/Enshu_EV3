@@ -8,34 +8,27 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import lejos.hardware.lcd.LCD;
 import lejos.utility.Stopwatch;
 
 public class Controller implements block{
 
 	static private final byte flags = 0x03;
-	private final double K_p = 0.7f;
-	private final double K_i = 0.45f;
+	private final int history_size = 5;
+	private final double K_p = 1.2f;
+	private final double K_i = 1.0f / history_size / 5f;
 	private final double K_d = 0.0f;
 	private final double backP = 1.3f;
 	private double before = 0.0f;
 	private double before_time;
 	private Stopwatch stopwatch;
 	private boolean startflg = false;
-	private List<Double> history = new ArrayList<Double>();
+	private List<Double>history = new ArrayList<Double>();
 
 	public Controller(){
 		stopwatch = new Stopwatch();
 		before_time = stopwatch.elapsed();
-		try{
-			File csv = new File("outputData.csv");
-			BufferedWriter bw = new BufferedWriter(new FileWriter(csv, true));
-			bw.write("K_p,K_i,K_d,speed,error,"+K_p+","+K_i+","+K_d+"\n");
-			bw.close();
-		}catch(FileNotFoundException e){
-			e.printStackTrace();
-		}catch(IOException e){
-			e.printStackTrace();
-		}
+		System.out.println("K_p,K_i,K_d,speed,error,"+K_p+","+K_i+","+K_d+"\n");
 	}
 
 	@Override
@@ -45,21 +38,18 @@ public class Controller implements block{
 			return 0.0f;
 		}
 		
-		
+//		LCD.clear();
+//		LCD.drawString("v:"+ v, 1, 0);
+//		LCD.drawString("deg:"+ deg, 1, 1);
+//		LCD.refresh();
+
 		double motorSpeed = 0.0f;
-		try{
-			File csv = new File("outputData.csv");
-			BufferedWriter bw = new BufferedWriter(new FileWriter(csv, true));
-
-			String newline = "";
-
 			double nowtime = stopwatch.elapsed();
 
 			if((flags & 0x01) > 0x00){	//比例制御
 				motorSpeed += K_p * input;
-				newline += input * K_p + ",";
+				System.out.print(K_p * input + ",");
 			}
-			else newline += 0.0f + ",";
 			if((flags & 0x02) > 0x00){	//積分制御
 				if(history.size() == 5) history.remove(0);
 				history.add(input);
@@ -68,31 +58,24 @@ public class Controller implements block{
 					sum += K_i * data;
 				}
 				motorSpeed += sum;
-				newline += sum + ",";
+				System.out.print(sum + ",");
 			}
-			else newline += 0.0f + ",";
 			if((flags & 0x04) > 0x00){	//微分制御
 				motorSpeed += K_d * (input - before) / (nowtime - before_time);
-				newline += K_d * (input - before) / (nowtime - before_time)+",";
 				before_time = nowtime;
 				before = input;
 			}
-			else newline += 0.0f + ",";
 			
+			System.out.println();
+			int signed = (motorSpeed > 0.0f)? 1:-1;
+			double motorabs = Math.abs(motorSpeed);
+
+			motorSpeed = signed * Math.pow(motorabs / 780.0f, 1.1f) * 780.0f;
 			
-//			motorSpeed = 14.0f * Math.sqrt(2.0f * (1.0f - Math.cos(Math.toRadians(Math.abs(input) + Math.abs(degree))))) / (11.0f * Math.PI) * 360.0f;
-//			motorSpeed = (input < 0.0f? -1.0f:1.0f) * 0.0014f * motorSpeed * motorSpeed;
-		
-			if(motorSpeed > 0.0f) motorSpeed *= backP;
+//			motorSpeed = signed * Math.pow(motorabs / 20.0f, 2.0f) / Math.pow(motorabs / 390.0f - 2.0f, 2.0f);
 			
-			newline += motorSpeed+","+input+"\n";
-			bw.write(newline);
-			bw.close();
-		}catch(FileNotFoundException e){
-			e.printStackTrace();
-		}catch(IOException e){
-			e.printStackTrace();
-		}
+//			if(motorSpeed < 0.0f) motorSpeed *= backP;
+			
 		return motorSpeed;
 	}
 

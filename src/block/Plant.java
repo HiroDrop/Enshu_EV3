@@ -7,6 +7,8 @@ import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3GyroSensor;
 import lejos.hardware.sensor.SensorMode;
 import lejos.robotics.RegulatedMotor;
+import lejos.utility.Stopwatch;
+import lejos.hardware.Button;
 
 /*
  * Plant program (EV3)
@@ -59,11 +61,14 @@ public class Plant implements block{
 		double deg = (double)gyrovalue_deg[0];
 //		while(output > 360.0f) output -= 360.0f;
 
+		if(deg > 90.0f) Button.LEDPattern(1);
+		else Button.LEDPattern(2);
+		
 		//画面出力
 		//print input
 		LCD.clear();
-		LCD.drawString("v:"+ v + "\n", 1, 0);
-		LCD.drawString("d:"+ deg + "\n", 1, 1);
+		LCD.drawString("v:"+ v, 1, 0);
+		LCD.drawString("deg:"+ deg, 1, 1);
 		LCD.refresh();
 
 
