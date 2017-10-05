@@ -21,7 +21,11 @@ public class Plant implements block{
     private SensorMode gyro_v = gyroSensor.getMode(0);
     private SensorMode gyro_deg = gyroSensor.getMode(1);
     private PlantData outdata = new PlantData();
-
+	Stopwatch stopwatch = new Stopwatch();		// 経過時間取得用ストップウォッチ
+	private double before_time = stopwatch.elapsed();	// 過去経過時間
+	
+	private int count = 0;
+	
     public Plant(){
     	gyroSensor.reset();
 		LCD.clear();
@@ -31,6 +35,14 @@ public class Plant implements block{
 
     public boolean isGoodCond(){
     	return outdata.isGoodCond();
+    }
+    
+    public double getV(){
+    	return outdata.getV();
+    }
+    
+    public double getDeg(){
+    	return outdata.getDeg();
     }
     
 	@Override
@@ -44,12 +56,12 @@ public class Plant implements block{
 		rightMotor.setSpeed(Math.abs((int)input));
 
 		if(input < 0.0f){
-			leftMotor.backward();
-			rightMotor.backward();
-		}
-		else{
 			leftMotor.forward();
 			rightMotor.forward();
+		}
+		else{
+			leftMotor.backward();
+			rightMotor.backward();
 		}
 
 		//角度を取得
@@ -59,7 +71,6 @@ public class Plant implements block{
 		//値の正規化
 		double v = (double)gyrovalue_v[0];
 		double deg = (double)gyrovalue_deg[0];
-//		while(output > 360.0f) output -= 360.0f;
 
 		if(deg > 90.0f) Button.LEDPattern(1);
 		else Button.LEDPattern(2);
@@ -67,9 +78,21 @@ public class Plant implements block{
 		//画面出力
 		//print input
 		LCD.clear();
-		LCD.drawString("v:"+ v, 1, 0);
-		LCD.drawString("deg:"+ deg, 1, 1);
+		LCD.drawString("deg:"+deg, 1, 0);
 		LCD.refresh();
+//		double now_time = stopwatch.elapsed();		// 現在時刻の取得
+//		if(now_time - before_time > 1000){		// 一定時間経過したら
+//			LCD.clear();
+//			LCD.drawString("count:"+count, 1, 0);
+//			LCD.refresh();
+//			before_time = now_time;			// 過去経過時間を更新
+//			count = 0;
+//		}
+//		count++;
+//		LCD.clear();
+//		LCD.drawString("v:"+ v, 1, 0);
+//		LCD.drawString("deg:"+ deg, 1, 1);
+//		LCD.refresh();
 
 
 		outdata.setData(v, deg);
