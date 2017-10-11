@@ -27,7 +27,7 @@ public class Main{
 				T =0.0f;
 			}
 			now_time = stopwatch.elapsed();		// 現在時刻の取得
-			double x_motorSpeed = controller.calc((ev3.isGoodCond()? -0.4f : 1.5f) * (SETPOINT - ev3Output));	// 制御器による制御開始
+			double x_motorSpeed = controller.calc((ev3.isGoodCond()? -0.4f : 1.3f) * (SETPOINT - ev3Output));	// 制御器による制御開始
 			if(now_time - before_time > T){		// 一定時間経過したら
 				before_time = now_time;			// 過去経過時間を更新
 				motorSpeed = x_motorSpeed;

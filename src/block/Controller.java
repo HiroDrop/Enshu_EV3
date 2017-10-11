@@ -13,9 +13,9 @@ import lejos.utility.Stopwatch;
 
 public class Controller implements block{
 
-	static private final byte flags = 0x03;
+	static private final byte flags = 0x01;
 	private final int history_size = 5;
-	private final double K_p = 4.0f;
+	private final double K_p = 5.0f;
 	private final double K_i = history_size / 5f;
 	private final double K_d = 0.0f;
 	private final double backP = 1.3f;
