@@ -56,12 +56,12 @@ public class Plant implements block{
 		rightMotor.setSpeed(Math.abs((int)input));
 
 		if(input < 0.0f){
-			leftMotor.forward();
-			rightMotor.forward();
-		}
-		else{
 			leftMotor.backward();
 			rightMotor.backward();
+		}
+		else{
+			leftMotor.forward();
+			rightMotor.forward();
 		}
 
 		//角度を取得
@@ -78,21 +78,8 @@ public class Plant implements block{
 		//画面出力
 		//print input
 		LCD.clear();
-		LCD.drawString("deg:"+deg, 1, 0);
+		LCD.drawString("deg:"+input, 1, 0);
 		LCD.refresh();
-//		double now_time = stopwatch.elapsed();		// 現在時刻の取得
-//		if(now_time - before_time > 1000){		// 一定時間経過したら
-//			LCD.clear();
-//			LCD.drawString("count:"+count, 1, 0);
-//			LCD.refresh();
-//			before_time = now_time;			// 過去経過時間を更新
-//			count = 0;
-//		}
-//		count++;
-//		LCD.clear();
-//		LCD.drawString("v:"+ v, 1, 0);
-//		LCD.drawString("deg:"+ deg, 1, 1);
-//		LCD.refresh();
 
 
 		outdata.setData(v, deg);

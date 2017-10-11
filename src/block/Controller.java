@@ -15,10 +15,10 @@ public class Controller implements block{
 
 	static private final byte flags = 0x01;
 	private final int history_size = 5;
-	private final double K_p = 5.0f;
+	private final double K_p = 21.0f;
 	private final double K_i = history_size / 5f;
 	private final double K_d = 0.0f;
-	private final double backP = 1.3f;
+	private final double backP = 0.33f;
 	private double before = 0.0f;
 	private double before_time;
 	private Stopwatch stopwatch;
@@ -65,11 +65,8 @@ public class Controller implements block{
 			double motorabs = Math.abs(motorSpeed);
 
 			motorSpeed = signed * Math.pow(motorabs / 780.0f, 1.7f) * 780.0f;
-//			System.out.println(motorSpeed);
 			
-//			motorSpeed = signed * Math.pow(motorabs / 20.0f, 2.0f) / Math.pow(motorabs / 390.0f - 2.0f, 2.0f);
-			
-//			if(motorSpeed < 0.0f) motorSpeed *= backP;
+			if(signed < 0.0f) motorSpeed *= backP;
 			
 		return motorSpeed;
 	}
